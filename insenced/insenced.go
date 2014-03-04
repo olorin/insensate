@@ -1,12 +1,11 @@
 package main
 
 import (
-	"github.com/fractalcat/emogo"
+	"flag"
 	"github.com/anchor/picolog"
+	"github.com/fractalcat/emogo"
 	zmq "github.com/pebbe/zmq4"
 	"os"
-	"flag"
-	"log/syslog"
 )
 
 var Logger *picolog.Logger
@@ -14,7 +13,7 @@ var Logger *picolog.Logger
 func main() {
 	listen := flag.String("listen", "tcp://*:9424", "ZMQ URI to listen on.")
 	flag.Parse()
-	Logger = picolog.NewLogger(syslog.LOG_DEBUG, "insenced", os.Stdout)
+	Logger = picolog.NewLogger(picolog.LogDebug, "insenced", os.Stdout)
 	eeg, err := emogo.NewEmokitContext()
 	if err != nil {
 		Logger.Errorf("Could not initialize emokit context: %v", err)
