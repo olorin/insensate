@@ -28,7 +28,7 @@ func main() {
 	Logger = picolog.NewLogger(picolog.LogDebug, "insenced", os.Stdout)
 	eeg, err := emogo.NewEmokitContext()
 	if err != nil {
-		Logger.Errorf("Could not initialize emokit context: %v", err)
+		Logger.Fatalf("Could not initialize emokit context: %v", err)
 	}
 	sock, err := zmq.NewSocket(zmq.PUB)
 	if err != nil {
