@@ -13,11 +13,13 @@ var Logger *picolog.Logger
 
 func readFrames(e *emogo.EmokitContext, out chan *emogo.EmokitFrame) {
 	for {
-		f, err := e.WaitGetFrame()
+		Logger.Debugf("Reading frame.")
+		f, err := e.GetFrame()
 		if err != nil {
-			fmt.Printf("error reading frame: %v", err)
+			Logger.Errorf("Error reading frame: %v", err)
 			return
 		}
+		Logger.Debugf("Read frame.")
 		out <- f
 	}
 }
