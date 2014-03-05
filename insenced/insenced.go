@@ -31,6 +31,7 @@ func main() {
 		Logger.Fatalf("Could not initialize emokit context: %v", err)
 	}
 	Logger.Debugf("EEG initialized.")
+	Logger.Debugf("Detected %d EEG devices connected.", eeg.Count())
 	sock, err := zmq.NewSocket(zmq.PUB)
 	if err != nil {
 		Logger.Fatalf("Could not create ZMQ socket: %v", err)
