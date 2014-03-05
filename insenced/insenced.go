@@ -12,13 +12,11 @@ var Logger *picolog.Logger
 
 func readFrames(e *emogo.EmokitContext, out chan *emogo.EmokitFrame) {
 	for {
-		Logger.Debugf("Reading frame.")
 		f, err := e.GetFrame()
 		if err != nil {
 			Logger.Errorf("Error reading frame: %v", err)
-			return
+			continue
 		}
-		Logger.Debugf("Read frame.")
 		out <- f
 	}
 }
@@ -27,7 +25,7 @@ func main() {
 	listen := flag.String("listen", "tcp://*:9424", "ZMQ URI to listen on.")
 	flag.Parse()
 	Logger = picolog.NewLogger(picolog.LogDebug, "insenced", os.Stdout)
-	eeg, err := emogo.NewEmokitContext()
+	eeg, err := emogo.NewEmokitContext(emogo.ConsumerHeadset)
 	if err != nil {
 		Logger.Fatalf("Could not initialize emokit context: %v", err)
 	}
@@ -41,10 +39,11 @@ func main() {
 	if err != nil {
 		Logger.Fatalf("Could not bind to %s: %v", listen, err)
 	}
-	frameChan := make(chan *emogo.EmokitFrame, 0)
-	readFrames(eeg, frameChan)
+	frameChan := make(chan *emogo.EmokitFrame)
+	go readFrames(eeg, frameChan)
+	var f *emogo.EmokitFrame
 	for {
-		f := <-frameChan
+		f  = <-frameChan
 		Logger.Debugf("Got frame. Sending.")
 		_, err := sock.SendBytes(f.Raw(), 0)
 		if err != nil {
