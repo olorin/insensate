@@ -30,6 +30,7 @@ func main() {
 	if err != nil {
 		Logger.Fatalf("Could not initialize emokit context: %v", err)
 	}
+	Logger.Debugf("EEG initialized.")
 	sock, err := zmq.NewSocket(zmq.PUB)
 	if err != nil {
 		Logger.Fatalf("Could not create ZMQ socket: %v", err)
@@ -42,6 +43,7 @@ func main() {
 	readFrames(eeg, frameChan)
 	for {
 		f := <-frameChan
+		Logger.Debugf("Got frame. Sending.")
 		_, err := sock.SendBytes(f.Raw(), 0)
 		if err != nil {
 			fmt.Printf("Error sending raw frame: %v", err)
