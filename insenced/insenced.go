@@ -2,7 +2,6 @@ package main
 
 import (
 	"flag"
-	"fmt"
 	"github.com/anchor/picolog"
 	"github.com/fractalcat/emogo"
 	zmq "github.com/pebbe/zmq4"
@@ -49,7 +48,7 @@ func main() {
 		Logger.Debugf("Got frame. Sending.")
 		_, err := sock.SendBytes(f.Raw(), 0)
 		if err != nil {
-			fmt.Printf("Error sending raw frame: %v", err)
+			Logger.Errorf("Error sending raw frame: %v", err)
 		}
 	}
 }
