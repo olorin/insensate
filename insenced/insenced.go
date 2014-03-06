@@ -26,6 +26,7 @@ func main() {
 	flag.Parse()
 	Logger = picolog.NewLogger(picolog.LogDebug, "insenced", os.Stdout)
 	eeg, err := emogo.NewEmokitContext(emogo.ConsumerHeadset)
+	defer eeg.Shutdown()
 	if err != nil {
 		Logger.Fatalf("Could not initialize emokit context: %v", err)
 	}
