@@ -1,8 +1,9 @@
 package insensate;
 
 message EpocSensor {
-        required int32 value = 1;
-        optional int32 quality = 2;
+        required string label = 1;
+        required int32 value = 2;
+        optional int32 quality = 3;
 }
 
 message EpocFrame {
