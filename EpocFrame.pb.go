@@ -14,14 +14,22 @@ var _ = &json.SyntaxError{}
 var _ = math.Inf
 
 type EpocSensor struct {
-	Value            *int32 `protobuf:"varint,1,req,name=value" json:"value,omitempty"`
-	Quality          *int32 `protobuf:"varint,2,opt,name=quality" json:"quality,omitempty"`
-	XXX_unrecognized []byte `json:"-"`
+	Label            *string `protobuf:"bytes,1,req,name=label" json:"label,omitempty"`
+	Value            *int32  `protobuf:"varint,2,req,name=value" json:"value,omitempty"`
+	Quality          *int32  `protobuf:"varint,3,opt,name=quality" json:"quality,omitempty"`
+	XXX_unrecognized []byte  `json:"-"`
 }
 
 func (m *EpocSensor) Reset()         { *m = EpocSensor{} }
 func (m *EpocSensor) String() string { return proto.CompactTextString(m) }
 func (*EpocSensor) ProtoMessage()    {}
+
+func (m *EpocSensor) GetLabel() string {
+	if m != nil && m.Label != nil {
+		return *m.Label
+	}
+	return ""
+}
 
 func (m *EpocSensor) GetValue() int32 {
 	if m != nil && m.Value != nil {
