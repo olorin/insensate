@@ -1,5 +1,5 @@
 PROTOBUFS = EpocFrame.pb.go
-PROTOC = protoc --go_out=. 
+PROTOC = protoc --go_out=..
 
 install: build check
 	go install
