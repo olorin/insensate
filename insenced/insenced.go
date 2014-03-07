@@ -22,8 +22,10 @@ func readFrames(e *emogo.EmokitContext, out chan *emogo.EmokitFrame) {
 }
 
 func main() {
-	listen := flag.String("listen", "tcp://*:9424", "ZMQ URI to listen on.")
+	listenRaw := flag.String("listen-raw", "tcp://*:9424", "ZMQ URI to publish raw frames to.")
+	listenProto := flag.String("listen-proto", "tcp://*:9425", "ZMQ URI to publish protobufs to.")
 	flag.Parse()
+	_ = *listenProto
 	Logger = picolog.NewLogger(picolog.LogDebug, "insenced", os.Stdout)
 	eeg, err := emogo.NewEmokitContext(emogo.ConsumerHeadset)
 	defer eeg.Shutdown()
@@ -32,13 +34,13 @@ func main() {
 	}
 	Logger.Debugf("EEG initialized.")
 	Logger.Debugf("Detected %d EEG devices connected.", eeg.Count())
-	sock, err := zmq.NewSocket(zmq.PUB)
+	rawSock, err := zmq.NewSocket(zmq.PUB)
 	if err != nil {
 		Logger.Fatalf("Could not create ZMQ socket: %v", err)
 	}
-	err = sock.Bind(*listen)
+	err = rawSock.Bind(*listenRaw)
 	if err != nil {
-		Logger.Fatalf("Could not bind to %s: %v", listen, err)
+		Logger.Fatalf("Could not bind to %s: %v", listenRaw, err)
 	}
 	frameChan := make(chan *emogo.EmokitFrame)
 	go readFrames(eeg, frameChan)
@@ -46,7 +48,7 @@ func main() {
 	for {
 		f  = <-frameChan
 		Logger.Debugf("Got frame. Sending.")
-		_, err := sock.SendBytes(f.Raw(), 0)
+		_, err := rawSock.SendBytes(f.Raw(), 0)
 		if err != nil {
 			Logger.Errorf("Error sending raw frame: %v", err)
 		}
