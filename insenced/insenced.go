@@ -1,7 +1,7 @@
 package main
 
 import (
-	"flag"
+	"log"
 	"github.com/anchor/picolog"
 	"github.com/fractalcat/emogo"
 	zmq "github.com/pebbe/zmq4"
@@ -22,10 +22,10 @@ func readFrames(e *emogo.EmokitContext, out chan *emogo.EmokitFrame) {
 }
 
 func main() {
-	listenRaw := flag.String("listen-raw", "tcp://*:9424", "ZMQ URI to publish raw frames to.")
-	listenProto := flag.String("listen-proto", "tcp://*:9425", "ZMQ URI to publish protobufs to.")
-	flag.Parse()
-	_ = *listenProto
+	cfg, err := ParseConfig()
+	if err != nil {
+		log.Fatalf("Could not start insenced: %v", err)
+	}
 	Logger = picolog.NewLogger(picolog.LogDebug, "insenced", os.Stdout)
 	eeg, err := emogo.NewEmokitContext(emogo.ConsumerHeadset)
 	defer eeg.Shutdown()
@@ -38,9 +38,9 @@ func main() {
 	if err != nil {
 		Logger.Fatalf("Could not create ZMQ socket: %v", err)
 	}
-	err = rawSock.Bind(*listenRaw)
+	err = rawSock.Bind(cfg.Insenced.RawEndpoint)
 	if err != nil {
-		Logger.Fatalf("Could not bind to %s: %v", listenRaw, err)
+		Logger.Fatalf("Could not bind to %s: %v", cfg.Insenced.RawEndpoint, err)
 	}
 	frameChan := make(chan *emogo.EmokitFrame)
 	go readFrames(eeg, frameChan)
