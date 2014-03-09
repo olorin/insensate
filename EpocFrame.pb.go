@@ -46,14 +46,14 @@ func (m *EpocSensor) GetQuality() int32 {
 }
 
 type EpocFrame struct {
-	Counter *int32 `protobuf:"varint,1,req,name=counter" json:"counter,omitempty"`
-	GyroX   *int32 `protobuf:"varint,2,req,name=gyro_x" json:"gyro_x,omitempty"`
-	GyroY   *int32 `protobuf:"varint,3,req,name=gyro_y" json:"gyro_y,omitempty"`
+	Counter *uint32 `protobuf:"varint,1,req,name=counter" json:"counter,omitempty"`
+	GyroX   *int32  `protobuf:"varint,2,req,name=gyro_x" json:"gyro_x,omitempty"`
+	GyroY   *int32  `protobuf:"varint,3,req,name=gyro_y" json:"gyro_y,omitempty"`
 	// In order:
 	//
 	//   F3, FC6, P7, T8, F7, F8, T7, P8, AF4, F4, AF3, O2, O1, FC5
 	Sensors          []*EpocSensor `protobuf:"bytes,4,rep,name=sensors" json:"sensors,omitempty"`
-	Battery          *int32        `protobuf:"varint,5,opt,name=battery" json:"battery,omitempty"`
+	Battery          *uint32       `protobuf:"varint,5,opt,name=battery" json:"battery,omitempty"`
 	Timestamp        *uint64       `protobuf:"fixed64,6,opt,name=timestamp" json:"timestamp,omitempty"`
 	XXX_unrecognized []byte        `json:"-"`
 }
@@ -62,7 +62,7 @@ func (m *EpocFrame) Reset()         { *m = EpocFrame{} }
 func (m *EpocFrame) String() string { return proto.CompactTextString(m) }
 func (*EpocFrame) ProtoMessage()    {}
 
-func (m *EpocFrame) GetCounter() int32 {
+func (m *EpocFrame) GetCounter() uint32 {
 	if m != nil && m.Counter != nil {
 		return *m.Counter
 	}
@@ -90,7 +90,7 @@ func (m *EpocFrame) GetSensors() []*EpocSensor {
 	return nil
 }
 
-func (m *EpocFrame) GetBattery() int32 {
+func (m *EpocFrame) GetBattery() uint32 {
 	if m != nil && m.Battery != nil {
 		return *m.Battery
 	}

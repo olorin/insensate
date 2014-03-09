@@ -7,14 +7,14 @@ message EpocSensor {
 }
 
 message EpocFrame {
-        required int32 counter = 1;
+        required uint32 counter = 1;
         required int32 gyro_x = 2;
         required int32 gyro_y = 3;
         // In order: 
         //
         //   F3, FC6, P7, T8, F7, F8, T7, P8, AF4, F4, AF3, O2, O1, FC5
         repeated EpocSensor sensors = 4;   
-        optional int32 battery = 5;
+        optional uint32 battery = 5;
         optional fixed64 timestamp = 6;
 }
 
