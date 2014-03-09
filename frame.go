@@ -2,7 +2,7 @@ package insensate
 
 import (
 	"github.com/fractalcat/emogo"
-	_ "code.google.com/p/goprotobuf/proto"
+	"code.google.com/p/goprotobuf/proto"
 )
 
 func NewEpocSensor(label string, value int, quality int) *EpocSensor {
@@ -14,9 +14,9 @@ func NewEpocSensor(label string, value int, quality int) *EpocSensor {
 	return s
 }
 
-func (e *EpocFrame) addSensor(label string, value int, quality int) {
+func (f *EpocFrame) addSensor(label string, value int, quality int) {
 	s := NewEpocSensor(label, value, quality)
-	e.Sensors = append(e.Sensors, s)
+	f.Sensors = append(f.Sensors, s)
 }
 
 func NewEpocFrame(e *emogo.EmokitFrame) *EpocFrame {
@@ -47,4 +47,15 @@ func NewEpocFrame(e *emogo.EmokitFrame) *EpocFrame {
 	f.addSensor("O1", e.O1.Value, e.O1.Quality)
 	f.addSensor("FC5", e.FC5.Value, e.FC5.Quality)
 	return f
+}
+
+func (f *EpocFrame) Marshal() ([]byte, error) {
+	b, e := proto.Marshal(f)
+	return b, e
+}
+
+func UnmarshalFrame(data []byte) (*EpocFrame, error) {
+	f := new(EpocFrame)
+	err := proto.Unmarshal(data, f)
+	return f, err
 }
